@@ -1,13 +1,13 @@
-# Cursor Talk to Figma MCP
+# Talk to Figma MCP
 
-This project implements a Model Context Protocol (MCP) integration between Cursor AI and Figma, allowing Cursor to communicate with Figma for reading designs and modifying them programmatically.
+This project implements a Model Context Protocol (MCP) integration between AI assistants (like Claude Code, Cursor, and others) and Figma, allowing AI tools to communicate with Figma for reading designs and modifying them programmatically.
 
 https://github.com/user-attachments/assets/129a14d2-ed73-470f-9a4c-2240b2a4885c
 
 ## Project Structure
 
 - `src/talk_to_figma_mcp/` - TypeScript MCP server for Figma integration
-- `src/cursor_mcp_plugin/` - Figma plugin for communicating with Cursor
+- `src/figma_mcp_plugin/` - Figma plugin for communicating with AI assistants via MCP
 - `src/socket.ts` - WebSocket server that facilitates communication between the MCP server and Figma plugin
 
 ## Get Started
@@ -18,13 +18,13 @@ https://github.com/user-attachments/assets/129a14d2-ed73-470f-9a4c-2240b2a4885c
 curl -fsSL https://bun.sh/install | bash
 ```
 
-2. Run setup, this will also install MCP in your Cursor's active project
+2. Run setup, this will also install MCP in your AI assistant's active project
 
 ```bash
 bun setup
 ```
 
-3. Start the Websocket server
+3. Start the WebSocket server
 
 ```bash
 bun socket
@@ -46,16 +46,53 @@ Thanks to [@dusskapark](https://github.com/dusskapark) for contributing the bulk
 Another contribution from [@dusskapark](https://github.com/dusskapark)
 Propagate component instance overrides from a source instance to multiple target instances with a single command. This feature dramatically reduces repetitive design work when working with component instances that need similar customizations. Check out our [demo video](https://youtu.be/uvuT8LByroI).
 
-## Development Setup
+## Development Setup (Local)
 
-To develop, update your mcp config to direct to your local directory.
+### Quick Setup
+
+Run the setup script which will configure both Cursor and Claude Code automatically:
+
+```bash
+bun setup
+```
+
+This will:
+1. Install dependencies
+2. Create `.cursor/mcp.json` for Cursor (in project directory)
+3. Optionally create/update Claude Code config at:
+   - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+   - Linux: `~/.config/Claude/claude_desktop_config.json`
+
+### Manual Setup
+
+If you prefer to configure manually, update your MCP config to point to your local directory.
+
+**For Claude Code:**
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or equivalent:
 
 ```json
 {
   "mcpServers": {
     "TalkToFigma": {
       "command": "bun",
-      "args": ["/path-to-repo/src/talk_to_figma_mcp/server.ts"]
+      "args": ["/absolute/path/to/talk-to-figma-mcp/src/talk_to_figma_mcp/server.ts"]
+    }
+  }
+}
+```
+
+**For Cursor:**
+
+Create `.cursor/mcp.json` in your project:
+
+```json
+{
+  "mcpServers": {
+    "TalkToFigma": {
+      "command": "bun",
+      "args": ["/absolute/path/to/talk-to-figma-mcp/src/talk_to_figma_mcp/server.ts"]
     }
   }
 }
@@ -63,7 +100,24 @@ To develop, update your mcp config to direct to your local directory.
 
 ## Manual Setup and Installation
 
-### MCP Server: Integration with Cursor
+### MCP Server: Integration with AI Assistants
+
+**For Claude Code:**
+
+Add the server to your Claude Code MCP configuration in `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "TalkToFigma": {
+      "command": "bunx",
+      "args": ["talk-to-figma-mcp@latest"]
+    }
+  }
+}
+```
+
+**For Cursor:**
 
 Add the server to your Cursor MCP configuration in `~/.cursor/mcp.json`:
 
@@ -72,7 +126,7 @@ Add the server to your Cursor MCP configuration in `~/.cursor/mcp.json`:
   "mcpServers": {
     "TalkToFigma": {
       "command": "bunx",
-      "args": ["cursor-talk-to-figma-mcp@latest"]
+      "args": ["talk-to-figma-mcp@latest"]
     }
   }
 }
@@ -90,7 +144,7 @@ bun socket
 
 1. In Figma, go to Plugins > Development > New Plugin
 2. Choose "Link existing plugin"
-3. Select the `src/cursor_mcp_plugin/manifest.json` file
+3. Select the `src/figma_mcp_plugin/manifest.json` file
 4. The plugin should now be available in your Figma development plugins
 
 ## Windows + WSL Guide
@@ -117,10 +171,10 @@ bun socket
 ## Usage
 
 1. Start the WebSocket server
-2. Install the MCP server in Cursor
-3. Open Figma and run the Cursor MCP Plugin
+2. Install the MCP server in your AI assistant (Claude Code, Cursor, etc.)
+3. Open Figma and run the Talk to Figma MCP Plugin
 4. Connect the plugin to the WebSocket server by joining a channel using `join_channel`
-5. Use Cursor to communicate with Figma using the MCP tools
+5. Use your AI assistant to communicate with Figma using the MCP tools
 
 ## MCP Tools
 
@@ -217,7 +271,7 @@ The MCP server includes several helper prompts to guide you through complex desi
 1. Navigate to the Figma plugin directory:
 
    ```
-   cd src/cursor_mcp_plugin
+   cd src/figma_mcp_plugin
    ```
 
 2. Edit code.js and ui.html
