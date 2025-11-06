@@ -13,18 +13,21 @@
   ],
   "type": "module",
   "scripts": {
-    "start": "bun run dist/server.js",
-    "socket": "bun run src/socket.ts",
+    "start": "node dist/server.js",
+    "socket": "tsx src/socket-node.ts",
+    "socket:bun": "bun run src/socket.ts",
     "setup": "./scripts/setup.sh",
     "build": "tsup",
     "build:watch": "tsup --watch",
-    "dev": "bun run build:watch",
-    "pub:release": "bun run build && npm publish"
+    "dev": "npm run build:watch",
+    "pub:release": "npm run build && npm publish"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "bun-types": "^1.2.5",
+    "ts-node": "^10.9.2",
     "tsup": "^8.4.0",
+    "tsx": "^4.20.6",
     "typescript": "^5.0.0"
   },
   "dependencies": {

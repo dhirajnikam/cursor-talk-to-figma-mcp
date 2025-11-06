@@ -12,25 +12,51 @@ https://github.com/user-attachments/assets/129a14d2-ed73-470f-9a4c-2240b2a4885c
 
 ## Get Started
 
-1. Install Bun if you haven't already:
+### Prerequisites
 
+You need either **Bun** or **Node.js** (v18+) installed:
+
+**Option 1: Using Bun (Recommended)**
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
 
-2. Run setup, this will also install MCP in your AI assistant's active project
+**Option 2: Using Node.js**
+Make sure you have Node.js v18 or later installed.
 
+### Quick Setup
+
+1. Clone the repository:
 ```bash
-bun setup
+git clone https://github.com/sonnylazuardi/cursor-talk-to-figma-mcp.git
+cd cursor-talk-to-figma-mcp
 ```
 
-3. Start the WebSocket server
+2. Run setup (works with both Bun and npm):
 
+```bash
+npm run setup
+# or if you have Bun: bun setup
+```
+
+This will:
+- Install dependencies
+- Build the project
+- Configure MCP for your AI assistant (Cursor/Claude Code)
+
+3. Start the WebSocket server:
+
+**With Bun:**
 ```bash
 bun socket
 ```
 
-4. **NEW** Install Figma plugin from [Figma community page](https://www.figma.com/community/plugin/1485687494525374295/cursor-talk-to-figma-mcp-plugin) or [install locally](#figma-plugin)
+**With npm/Node:**
+```bash
+npm run socket
+```
+
+4. **Install Figma plugin** from [Figma community page](https://www.figma.com/community/plugin/1485687494525374295/cursor-talk-to-figma-mcp-plugin) or [install locally](#figma-plugin)
 
 ## Quick Video Tutorial
 

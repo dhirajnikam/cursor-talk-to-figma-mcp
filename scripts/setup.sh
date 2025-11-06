@@ -6,21 +6,38 @@ CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Create .cursor directory if it doesn't exist
 mkdir -p .cursor
 
-bun install
+# Check if bun is available, otherwise use npm
+if command -v bun &> /dev/null; then
+    echo "📦 Installing dependencies with bun..."
+    bun install
+    bun run build
+    RUNTIME="bun"
+    RUNTIME_CMD="bun"
+    SERVER_FILE="$CURRENT_DIR/src/talk_to_figma_mcp/server.ts"
+else
+    echo "📦 Installing dependencies with npm..."
+    npm install
+    npm run build
+    RUNTIME="node"
+    RUNTIME_CMD="node"
+    SERVER_FILE="$CURRENT_DIR/dist/server.js"
+fi
+
+echo "✅ Dependencies installed and project built"
 
 # Create mcp.json for Cursor with local path
 echo "{
   \"mcpServers\": {
     \"TalkToFigma\": {
-      \"command\": \"bun\",
+      \"command\": \"$RUNTIME_CMD\",
       \"args\": [
-        \"$CURRENT_DIR/src/talk_to_figma_mcp/server.ts\"
+        \"$SERVER_FILE\"
       ]
     }
   }
 }" > .cursor/mcp.json
 
-echo "✅ Cursor MCP config created at .cursor/mcp.json"
+echo "✅ Cursor MCP config created at .cursor/mcp.json (using $RUNTIME)"
 
 # Detect OS and create Claude Code config
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -52,23 +69,23 @@ if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         echo "Please manually add the following to your mcpServers section:"
         echo ""
         echo "  \"TalkToFigma\": {"
-        echo "    \"command\": \"bun\","
+        echo "    \"command\": \"$RUNTIME_CMD\","
         echo "    \"args\": ["
-        echo "      \"$CURRENT_DIR/src/talk_to_figma_mcp/server.ts\""
+        echo "      \"$SERVER_FILE\""
         echo "    ]"
         echo "  }"
     else
         echo "{
   \"mcpServers\": {
     \"TalkToFigma\": {
-      \"command\": \"bun\",
+      \"command\": \"$RUNTIME_CMD\",
       \"args\": [
-        \"$CURRENT_DIR/src/talk_to_figma_mcp/server.ts\"
+        \"$SERVER_FILE\"
       ]
     }
   }
 }" > "$CLAUDE_CONFIG_FILE"
-        echo "✅ Claude Code MCP config created at $CLAUDE_CONFIG_FILE"
+        echo "✅ Claude Code MCP config created at $CLAUDE_CONFIG_FILE (using $RUNTIME)"
     fi
 else
     echo "ℹ️  Skipping Claude Code config setup"
@@ -80,8 +97,13 @@ echo ""
 echo "For local development:"
 echo "  - Cursor: Config is at .cursor/mcp.json"
 echo "  - Claude Code: Config is at $CLAUDE_CONFIG_FILE"
+echo "  - Runtime: $RUNTIME"
 echo ""
 echo "Next steps:"
-echo "  1. Start the WebSocket server: bun socket"
+if [ "$RUNTIME" == "bun" ]; then
+    echo "  1. Start the WebSocket server: bun socket"
+else
+    echo "  1. Start the WebSocket server: npm run socket"
+fi
 echo "  2. Install the Figma plugin"
 echo "  3. Connect and start using!" 
