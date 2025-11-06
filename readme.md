@@ -46,16 +46,53 @@ Thanks to [@dusskapark](https://github.com/dusskapark) for contributing the bulk
 Another contribution from [@dusskapark](https://github.com/dusskapark)
 Propagate component instance overrides from a source instance to multiple target instances with a single command. This feature dramatically reduces repetitive design work when working with component instances that need similar customizations. Check out our [demo video](https://youtu.be/uvuT8LByroI).
 
-## Development Setup
+## Development Setup (Local)
 
-To develop, update your mcp config to direct to your local directory.
+### Quick Setup
+
+Run the setup script which will configure both Cursor and Claude Code automatically:
+
+```bash
+bun setup
+```
+
+This will:
+1. Install dependencies
+2. Create `.cursor/mcp.json` for Cursor (in project directory)
+3. Optionally create/update Claude Code config at:
+   - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+   - Linux: `~/.config/Claude/claude_desktop_config.json`
+
+### Manual Setup
+
+If you prefer to configure manually, update your MCP config to point to your local directory.
+
+**For Claude Code:**
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or equivalent:
 
 ```json
 {
   "mcpServers": {
     "TalkToFigma": {
       "command": "bun",
-      "args": ["/path-to-repo/src/talk_to_figma_mcp/server.ts"]
+      "args": ["/absolute/path/to/talk-to-figma-mcp/src/talk_to_figma_mcp/server.ts"]
+    }
+  }
+}
+```
+
+**For Cursor:**
+
+Create `.cursor/mcp.json` in your project:
+
+```json
+{
+  "mcpServers": {
+    "TalkToFigma": {
+      "command": "bun",
+      "args": ["/absolute/path/to/talk-to-figma-mcp/src/talk_to_figma_mcp/server.ts"]
     }
   }
 }
